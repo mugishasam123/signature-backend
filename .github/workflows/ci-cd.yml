@@ -1,5 +1,3 @@
-name: CI/CD for Spring Boot with Maven
-
 on:
   push:
     branches:
@@ -10,12 +8,22 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DB_URL: ${{ secrets.DB_URL }}
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_URL: jdbc:postgresql://localhost:5432/signaturegenerator
+      DB_USERNAME: postgres
+      DB_PASSWORD: 123
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       SUPPORT_EMAIL: ${{ secrets.SUPPORT_EMAIL }}
       APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+
+    services:
+      postgres:
+        image: postgis/postgis:10-2.5
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: signaturegenerator
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
     - name: Checkout code
@@ -26,6 +34,18 @@ jobs:
       with:
         distribution: 'adopt'
         java-version: '17'
+
+    # - name: Wait for PostgreSQL to be ready
+    #   run: |
+    #     until pg_isready -h localhost -p 5432 -U postgres; do
+    #       echo "Waiting for PostgreSQL to be ready..."
+    #       sleep 2
+    #     done
+
+    # - name: Create custom user and database
+    #   run: |
+    #     PGPASSWORD=password psql -h localhost -U postgres -d signaturegenerator -c "CREATE USER samuel WITH PASSWORD '123';"
+    #     PGPASSWORD=password psql -h localhost -U postgres -d signaturegenerator -c "GRANT ALL PRIVILEGES ON DATABASE signaturegenerator TO samuel;"
 
     - name: Build with Maven
       run: mvn clean package
