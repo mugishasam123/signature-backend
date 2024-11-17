@@ -26,7 +26,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             JwtResponse jwtResponse = authService.authenticateUser(loginRequest);
             return ResponseEntity.ok(jwtResponse);
@@ -36,7 +36,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 
         try {
             MessageResponse messageResponse = authService.registerUser(signUpRequest);
@@ -47,20 +47,20 @@ public class AuthController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verifyUser(@Valid @RequestBody VerifyUserDto verifyUserDto) {
+    public ResponseEntity<MessageResponse> verifyUser(@Valid @RequestBody VerifyUserDto verifyUserDto) {
         try {
             authService.verifyUser(verifyUserDto);
-            return ResponseEntity.ok("Account verified successfully");
+            return ResponseEntity.ok(MessageResponse.builder().message("Account verified successfully").build());
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
     }
 
     @PostMapping("/resend")
-    public ResponseEntity<?> resendVerificationCode(@RequestParam String email) {
+    public ResponseEntity<MessageResponse> resendVerificationCode(@RequestParam String email) {
         try {
             authService.resendVerificationCode(email);
-            return ResponseEntity.ok("Verification code sent");
+            return ResponseEntity.ok(MessageResponse.builder().message("Verification code sent").build());
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }

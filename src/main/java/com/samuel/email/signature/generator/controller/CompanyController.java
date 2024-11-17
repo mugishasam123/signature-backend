@@ -19,7 +19,7 @@ public class CompanyController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public ResponseEntity<?> getCompany() {
+    public ResponseEntity<Optional<Company>> getCompany() {
         try {
             Optional<Company> company = companyService.getCompany();
             return ResponseEntity.ok(company);
@@ -31,7 +31,7 @@ public class CompanyController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping
-    public ResponseEntity<?> updateCompany(@RequestBody Company company) {
+    public ResponseEntity<Company> updateCompany(@RequestBody Company company) {
         try {
             Company updatedCompany = companyService.saveCompany(company);
             return ResponseEntity.ok(updatedCompany);

@@ -17,13 +17,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-
 public class UserController {
 
   private final UsersService usersService;
 
   @GetMapping("/me")
-  public ResponseEntity<?> whoami() {
+  public ResponseEntity<User> whoami() {
 
     try {
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -46,7 +45,7 @@ public class UserController {
   }
 
   @PutMapping("/phone")
-  public ResponseEntity<?> updatePhoneNumber(@Valid @RequestBody UpdateUserRequest updateUserRequest) {
+  public ResponseEntity<MessageResponse> updatePhoneNumber(@Valid @RequestBody UpdateUserRequest updateUserRequest) {
     try {
       MessageResponse messageResponse = usersService.updatePhoneNumber(updateUserRequest);
       return ResponseEntity.ok(messageResponse);
@@ -58,7 +57,7 @@ public class UserController {
 
   @PreAuthorize("hasRole('ADMIN')")
   @PutMapping("/userTitle")
-  public ResponseEntity<?> updateUserTitle(@Valid @RequestBody UpdateUserRequest updateUserRequest) {
+  public ResponseEntity<MessageResponse> updateUserTitle(@Valid @RequestBody UpdateUserRequest updateUserRequest) {
     try {
       MessageResponse messageResponse = usersService.updateUserTitle(updateUserRequest);
       return ResponseEntity.ok(messageResponse);
