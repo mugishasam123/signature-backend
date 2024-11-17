@@ -87,6 +87,7 @@ jobs:
     - name: Connect SSH and Restart Services
       run: |
         ssh -o StrictHostKeyChecking=no -i $HOME/key.pem ubuntu@ec2-16-170-247-42.eu-north-1.compute.amazonaws.com '
+          sudo systemctl daemon-reload &&
           sudo systemctl restart email-signature-generator &&
           sudo systemctl restart nginx
         '
