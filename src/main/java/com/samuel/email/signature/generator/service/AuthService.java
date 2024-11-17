@@ -69,11 +69,11 @@ public class AuthService {
 
     public MessageResponse registerUser(SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return MessageResponse.builder().message("Error: Username is already taken!").build();
+            throw new RuntimeException("Username is already taken!");
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return MessageResponse.builder().message("Error: Email is already in use!").build();
+            throw new RuntimeException("Email is already in use!");
         }
 
         User user = User.builder()
@@ -87,14 +87,14 @@ public class AuthService {
 
         Set<Role> roles = new HashSet<>();
         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                .orElseThrow(() -> new RuntimeException("Role is not found."));
         roles.add(userRole);
         user.setRoles(roles);
 
         sendVerificationEmail(user);
         userRepository.save(user);
 
-        return MessageResponse.builder().message("User registered successfully!").build();
+        return MessageResponse.builder().message("User registered successfully! Please check your email to verify your account and activate it.").build();
     }
 
     public void verifyUser(VerifyUserDto input) {

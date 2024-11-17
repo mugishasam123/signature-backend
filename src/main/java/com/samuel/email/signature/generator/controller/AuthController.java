@@ -17,7 +17,6 @@ import com.samuel.email.signature.generator.payload.response.JwtResponse;
 import com.samuel.email.signature.generator.payload.response.MessageResponse;
 import com.samuel.email.signature.generator.service.AuthService;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor

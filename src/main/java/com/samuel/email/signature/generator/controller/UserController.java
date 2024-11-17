@@ -13,13 +13,26 @@ import com.samuel.email.signature.generator.models.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
 
   private final UsersService usersService;
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @GetMapping
+  public ResponseEntity<List<User>> getCompany() {
+    try {
+      List<User> company = usersService.findAll();
+      return ResponseEntity.ok(company);
+    } catch (RuntimeException e) {
+      throw new RuntimeException(e);
+    }
+
+  }
 
   @GetMapping("/me")
   public ResponseEntity<User> whoami() {
