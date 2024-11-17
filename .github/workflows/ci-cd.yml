@@ -9,11 +9,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      DB_URL: ${{ secrets.DB_URL }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      SUPPORT_EMAIL: ${{ secrets.SUPPORT_EMAIL }}
+      APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up JDK
+    - name: Set up JDK 
       uses: actions/setup-java@v2
       with:
         distribution: 'adopt'
