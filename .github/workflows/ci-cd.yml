@@ -9,7 +9,7 @@ jobs:
 
     env:
       DB_URL: jdbc:postgresql://localhost:5432/signaturegenerator
-      DB_USERNAME: postgres
+      DB_USERNAME: samuel
       DB_PASSWORD: 123
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       SUPPORT_EMAIL: ${{ secrets.SUPPORT_EMAIL }}
@@ -35,17 +35,17 @@ jobs:
         distribution: 'adopt'
         java-version: '17'
 
-    # - name: Wait for PostgreSQL to be ready
-    #   run: |
-    #     until pg_isready -h localhost -p 5432 -U postgres; do
-    #       echo "Waiting for PostgreSQL to be ready..."
-    #       sleep 2
-    #     done
+    - name: Wait for PostgreSQL to be ready
+      run: |
+        until pg_isready -h localhost -p 5432 -U postgres; do
+          echo "Waiting for PostgreSQL to be ready..."
+          sleep 2
+        done
 
-    # - name: Create custom user and database
-    #   run: |
-    #     PGPASSWORD=password psql -h localhost -U postgres -d signaturegenerator -c "CREATE USER samuel WITH PASSWORD '123';"
-    #     PGPASSWORD=password psql -h localhost -U postgres -d signaturegenerator -c "GRANT ALL PRIVILEGES ON DATABASE signaturegenerator TO samuel;"
+    - name: Create custom user and database
+      run: |
+        PGPASSWORD=password psql -h localhost -U postgres -d signaturegenerator -c "CREATE USER samuel WITH PASSWORD '123';"
+        PGPASSWORD=password psql -h localhost -U postgres -d signaturegenerator -c "GRANT ALL PRIVILEGES ON DATABASE signaturegenerator TO samuel;"
 
     - name: Build with Maven
       run: mvn clean package
