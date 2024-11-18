@@ -86,10 +86,13 @@ public class EmailSignatureController {
     public ResponseEntity<?> generateImageSignature( ) throws Exception {
 
         try {
+            System.out.println("test1 ");
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             User currentUser = usersService.findByEmail(userDetails.getEmail());
             Optional<Company> company = companyService.getCompany();
+            System.out.println("test2 ");
+
             String htmlContent = emailSignatureService.generateHtmlSignature(currentUser, company.orElse(null));
             File generatedImageFile = emailSignatureService.generateImageFromHtml(htmlContent, currentUser.getEmail(), imageDirectory);
 
@@ -105,9 +108,11 @@ public class EmailSignatureController {
                     .contentType(MediaType.IMAGE_PNG)
                     .body(resource);
         } catch (RuntimeException e) {
-            throw new RuntimeException(e);
-        }
+            System.out.println(e.getMessage());
 
+            e.printStackTrace();
+        }
+ return  ResponseEntity.ok("hhhhh");
     }
 
 
