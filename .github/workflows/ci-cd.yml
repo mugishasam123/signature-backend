@@ -84,10 +84,20 @@ jobs:
         source: "target/*.jar"
         target: "/home/ubuntu/deployment/"
 
-    - name: Connect SSH and Restart Services
+    - name: SSH into EC2 and deploy the Docker container
       run: |
-        ssh -o StrictHostKeyChecking=no -i $HOME/key.pem ubuntu@ec2-16-170-247-42.eu-north-1.compute.amazonaws.com '
-          sudo systemctl daemon-reload &&
-          sudo systemctl restart email-signature-generator &&
+        ssh -o StrictHostKeyChecking=no -i $HOME/key.pem ubuntu@${{ secrets.DEPLOY_HOST }} << 'EOF'
+         
+          sudo apt-get update -y
+          sudo apt-get install docker.io -y
+
+          sudo docker build -t email-signature-generator /home/ubuntu/deployment
+
+          sudo docker ps -q -f name=email-signature-generator | xargs -r sudo docker stop
+
+          sudo docker ps -a -q -f name=email-signature-generator | xargs -r sudo docker rm
+
+          sudo docker run -d --name email-signature-generator -p 8080:8080 email-signature-generator
+
           sudo systemctl restart nginx
-        '
+        EOF
