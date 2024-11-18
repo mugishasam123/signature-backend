@@ -94,7 +94,7 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install docker.io -y
 
-          sudo docker build -t email-signature-generator /home/ubuntu/deployment
+          sudo docker build -t email-signature-generator /home/ubuntu/deployment/deployment
 
           sudo docker ps -q -f name=email-signature-generator | xargs -r sudo docker stop
 
