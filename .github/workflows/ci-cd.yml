@@ -68,7 +68,17 @@ jobs:
       with:
         name: packaged-application
         path: deployment/
-    
+
+    - name: Create .env file
+      run: |
+        cat <<EOF > deployment/.env
+        DB_URL=${{ secrets.DB_URL }}
+        DB_USERNAME=${{ secrets.DB_USERNAME }}
+        DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+        JWT_SECRET=${{ secrets.JWT_SECRET }}
+        SUPPORT_EMAIL=${{ secrets.SUPPORT_EMAIL }}
+        APP_PASSWORD=${{ secrets.APP_PASSWORD }}
+        EOF
 
     - name: Setup key
       id: setup-key
@@ -86,6 +96,7 @@ jobs:
         key: ${{ secrets.DEPLOY_KEY }}
         source: "deployment/*"
         target: "/home/ubuntu/deployment/"
+        
 
     - name: SSH into EC2 and deploy the Docker container
       run: |
@@ -94,13 +105,23 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install docker.io -y
 
+          # sudo docker ps -q -f name=signaturegenerator-db | xargs -r sudo docker stop
+          # sudo docker ps -a -q -f name=signaturegenerator-db | xargs -r sudo docker rm
+
+          # sudo docker run -d --name signaturegenerator-db \
+          #   -e POSTGRES_DB=signaturegenerator \
+          #   -e POSTGRES_USER=samuel \
+          #   -e POSTGRES_PASSWORD=123 \
+          #   -p 5432:5432 \
+          #   --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5 \
+          #   postgis/postgis:10-2.5
+
           sudo docker build -t email-signature-generator /home/ubuntu/deployment/deployment
 
           sudo docker ps -q -f name=email-signature-generator | xargs -r sudo docker stop
-
           sudo docker ps -a -q -f name=email-signature-generator | xargs -r sudo docker rm
 
-          sudo docker run -d --name email-signature-generator -p 8080:8080 email-signature-generator
+          sudo docker run -d --name email-signature-generator --env-file /home/ubuntu/deployment/deployment/.env -p 8080:8080 email-signature-generator
 
           sudo systemctl restart nginx
         EOF
