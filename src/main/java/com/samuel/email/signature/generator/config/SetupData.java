@@ -30,12 +30,12 @@ public class SetupData {
         }
     }
 
-    private void createRoleIfNotExists(ERole roleName) {
+    public void createRoleIfNotExists(ERole roleName) {
         roleRepository.findByName(roleName)
                 .orElseGet(() -> roleRepository.save(Role.builder().name(roleName).build()));
     }
 
-    private void createAdminUser() {
+    public void createAdminUser() {
         Role roleAdmin = roleRepository.findByName(ERole.ROLE_ADMIN)
                 .orElseThrow(() -> new RuntimeException("Error: Admin role not found."));
         Role roleUser = roleRepository.findByName(ERole.ROLE_USER)

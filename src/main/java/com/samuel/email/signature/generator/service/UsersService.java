@@ -1,5 +1,6 @@
 package com.samuel.email.signature.generator.service;
 
+import com.samuel.email.signature.generator.models.ERole;
 import com.samuel.email.signature.generator.models.User;
 import com.samuel.email.signature.generator.payload.request.UpdateUserRequest;
 import com.samuel.email.signature.generator.payload.response.MessageResponse;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +21,14 @@ public class UsersService {
     private final UserRepository userRepository;
 
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userRepository.findAll()
+                .stream()
+                .filter(user -> user.getRoles().stream()
+                        .noneMatch(role -> role.getName() == ERole.ROLE_ADMIN))
+                .collect(Collectors.toList());
     }
+
+
 
     public User findByEmail(String email) {
         User user = userRepository.findByEmail(email)

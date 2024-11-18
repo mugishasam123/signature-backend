@@ -105,10 +105,9 @@ public class EmailSignatureController {
                     .contentType(MediaType.IMAGE_PNG)
                     .body(resource);
         } catch (RuntimeException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
-        return ResponseEntity.ok("testing image");
     }
 
 
