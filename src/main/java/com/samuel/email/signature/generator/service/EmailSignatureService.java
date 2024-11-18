@@ -19,10 +19,10 @@ public class EmailSignatureService {
         String username = user.getUsername() != null ? user.getUsername() : "N/A";
         String userTitle = user.getUserTitle() != null ? user.getUserTitle() : null;
         String PhoneNumber = user.getPhoneNumber() != null ? user.getPhoneNumber() : null;
-        String companyName = company.getName() != null ? company.getName() : "IST Africa";
-        String companyAddress = company.getAddress() != null ? company.getAddress() : "Kigali • KG 28 Ave, 57 • Rwanda";
-        String website = company.getWebsite() != null ? company.getWebsite() : "www.ist.com";
-        String missionStatement = company.getMissionStatement() != null ? company.getMissionStatement() : "Empowering learning, every day and everywhere.";
+        String companyName = company != null ? company.getName() : "IST Africa";
+        String companyAddress = company != null ? company.getAddress() : "Kigali • KG 28 Ave, 57 • Rwanda";
+        String website = company != null ? company.getWebsite() : "www.ist.com";
+        String missionStatement = company != null ? company.getMissionStatement() : "Empowering learning, every day and everywhere.";
 
         String titleClass = (userTitle == null) ? "hide" : "";
         String phoneClass = (PhoneNumber == null) ? "hide" : "";

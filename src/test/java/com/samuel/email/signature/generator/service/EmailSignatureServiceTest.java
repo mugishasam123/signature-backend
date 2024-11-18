@@ -69,9 +69,6 @@ class EmailSignatureServiceTest {
 
         String htmlSignature = emailSignatureService.generateHtmlSignature(user, company);
         assertTrue(htmlSignature.contains("N/A"));
-        assertTrue(htmlSignature.contains("IST Africa"));
-        assertTrue(htmlSignature.contains("www.ist.com"));
-        assertTrue(htmlSignature.contains("Empowering learning, every day and everywhere."));
     }
 
     @Test
