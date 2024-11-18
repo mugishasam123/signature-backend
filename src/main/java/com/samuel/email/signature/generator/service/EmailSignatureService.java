@@ -106,8 +106,8 @@ public class EmailSignatureService {
         </html>
         """.formatted(
                 username,
-                titleClass, userTitle != null ? userTitle : "", // Conditionally show the title
-                phoneClass, PhoneNumber != null ? PhoneNumber : "", // Conditionally show the phone number
+                titleClass, userTitle != null ? userTitle : "",
+                phoneClass, PhoneNumber != null ? PhoneNumber : "",
                 companyName,
                 companyAddress,
                 website,
@@ -132,7 +132,7 @@ public class EmailSignatureService {
         }
 
         try {
-            Java2DRenderer renderer = new Java2DRenderer(tempHtmlFile, 800); // Set image width
+            Java2DRenderer renderer = new Java2DRenderer(tempHtmlFile, 800);
             BufferedImage image = renderer.getImage();
 
             File outputFile = new File(outputPath);
