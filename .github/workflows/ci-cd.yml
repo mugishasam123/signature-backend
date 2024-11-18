@@ -105,23 +105,13 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install docker.io -y
 
-          # sudo docker ps -q -f name=signaturegenerator-db | xargs -r sudo docker stop
-          # sudo docker ps -a -q -f name=signaturegenerator-db | xargs -r sudo docker rm
-
-          # sudo docker run -d --name signaturegenerator-db \
-          #   -e POSTGRES_DB=signaturegenerator \
-          #   -e POSTGRES_USER=samuel \
-          #   -e POSTGRES_PASSWORD=123 \
-          #   -p 5432:5432 \
-          #   --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5 \
-          #   postgis/postgis:10-2.5
 
           sudo docker build -t email-signature-generator /home/ubuntu/deployment/deployment
 
           sudo docker ps -q -f name=email-signature-generator | xargs -r sudo docker stop
           sudo docker ps -a -q -f name=email-signature-generator | xargs -r sudo docker rm
 
-          sudo docker run -d --name email-signature-generator --env-file /home/ubuntu/deployment/deployment/.env -p 8080:8080 email-signature-generator
+          sudo docker run -d --name email-signature-generator --network signaturegenerator-network --env-file /home/ubuntu/deployment/deployment/.env -p 8080:8080 email-signature-generator
 
           sudo systemctl restart nginx
         EOF
