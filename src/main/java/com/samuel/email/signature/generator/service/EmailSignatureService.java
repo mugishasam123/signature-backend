@@ -16,9 +16,16 @@ import javax.imageio.ImageIO;
 public class EmailSignatureService {
 
     public String generateHtmlSignature(User user, Company company) {
-        String companyName = company != null ? company.getName() : "Your Company";
-        String companyAddress = company != null ? company.getAddress() : "Company Address";
-        String website = company != null ? company.getWebsite() : "https://example.com";
+        String username = user.getUsername() != null ? user.getUsername() : "N/A";
+        String userTitle = user.getUserTitle() != null ? user.getUserTitle() : null;
+        String PhoneNumber = user.getPhoneNumber() != null ? user.getPhoneNumber() : null;
+        String companyName = company != null ? company.getName() : "IST Africa";
+        String companyAddress = company != null ? company.getAddress() : "Kigali • KG 28 Ave, 57 • Rwanda";
+        String website = company != null ? company.getWebsite() : "www.ist.com";
+        String missionStatement = company != null ? company.getMissionStatement() : "Empowering learning, every day and everywhere.";
+
+        String titleClass = (userTitle == null) ? "hide" : "";
+        String phoneClass = (PhoneNumber == null) ? "hide" : "";
 
         return """
         <!DOCTYPE html>
@@ -42,6 +49,9 @@ public class EmailSignatureService {
                 .name {
                     font-size: 18px;
                     font-weight: bold;
+                }
+                .hide {
+                    display: none;
                 }
                 .title {
                     font-size: 14px;
@@ -80,8 +90,8 @@ public class EmailSignatureService {
         <body>
             <div class="signature-container">
                 <div class="name">%s</div>
-                <div class="title">%s</div>
-                <div class="contact-info">
+                <div class="title %s">%s</div>
+                <div class="contact-info %s">
                     <span>📞 M:</span>
                     <span>%s</span>
                 </div>
@@ -89,20 +99,22 @@ public class EmailSignatureService {
                 <div class="address">%s</div>
                 <a href="%s" class="website">%s</a>
                 <div class="quote">
-                    "Empowering learning, every day and everywhere."
+                   %s
                 </div>
             </div>
         </body>
         </html>
         """.formatted(
-                user.getUsername(),
-                user.getUserTitle(),
-                user.getPhoneNumber(),
+                username,
+                titleClass, userTitle != null ? userTitle : "", // Conditionally show the title
+                phoneClass, PhoneNumber != null ? PhoneNumber : "", // Conditionally show the phone number
                 companyName,
                 companyAddress,
                 website,
-                website
+                website,
+                missionStatement
         );
+
     }
 
     public File generateImageFromHtml(String htmlContent, String userEmail, String imageDirectory) throws IOException {
