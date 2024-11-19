@@ -94,13 +94,17 @@ public class EmailSignatureController {
             System.out.println("test2 ");
 
             String htmlContent = emailSignatureService.generateHtmlSignature(currentUser, company.orElse(null));
+            System.out.println("test3 ");
             File generatedImageFile = emailSignatureService.generateImageFromHtml(htmlContent, currentUser.getEmail(), imageDirectory);
-
+            System.out.println("test4 ");
             if (!generatedImageFile.exists()) {
                 throw new FileNotFoundException("Generated image not found");
             }
+            System.out.println("test5 ");
 
             Resource resource = new FileSystemResource(generatedImageFile);
+            System.out.println("test4 ");
+
             return ResponseEntity.ok()
                     .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
                     .header(HttpHeaders.PRAGMA, "no-cache")

@@ -22,6 +22,7 @@ public class SetupData {
 
     @PostConstruct
     public void init() {
+        System.setProperty("java.awt.headless", "true");
         createRoleIfNotExists(ERole.ROLE_USER);
         createRoleIfNotExists(ERole.ROLE_ADMIN);
 
