@@ -7,10 +7,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
 import org.xhtmlrenderer.swing.Java2DRenderer;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-
+import java.io.*;
+import java.nio.file.*;
 
 @Service
 public class EmailSignatureService {
@@ -22,89 +24,90 @@ public class EmailSignatureService {
         String companyName = company != null ? company.getName() : "IST Africa";
         String companyAddress = company != null ? company.getAddress() : "Kigali • KG 28 Ave, 57 • Rwanda";
         String website = company != null ? company.getWebsite() : "www.ist.com";
-        String missionStatement = company != null ? company.getMissionStatement() : "Empowering learning, every day and everywhere.";
+        String missionStatement = company != null ? company.getMissionStatement()
+                : "Empowering learning, every day and everywhere.";
 
         String titleClass = (userTitle == null) ? "hide" : "";
         String phoneClass = (PhoneNumber == null) ? "hide" : "";
 
         return """
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8"/>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    line-height: 1.5;
-                    margin: 0;
-                    padding: 0;
-                }
-                .signature-container {
-                    max-width: 400px;
-                    padding: 10px;
-                    border: 1px solid #ddd;
-                    border-radius: 5px;
-                }
-                .name {
-                    font-size: 18px;
-                    font-weight: bold;
-                }
-                .hide {
-                    display: none;
-                }
-                .title {
-                    font-size: 14px;
-                    font-style: italic;
-                    margin-bottom: 10px;
-                }
-                .contact-info {
-                    margin-bottom: 10px;
-                }
-                .contact-info span {
-                    display: inline-block;
-                    margin-right: 5px;
-                }
-                .company {
-                    font-size: 14px;
-                    font-weight: bold;
-                    margin-bottom: 5px;
-                }
-                .address {
-                    font-size: 12px;
-                    color: #555;
-                    margin-bottom: 5px;
-                }
-                .website {
-                    font-size: 12px;
-                    color: #007BFF;
-                    text-decoration: none;
-                }
-                .quote {
-                    font-size: 12px;
-                    font-style: italic;
-                    color: #555;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="signature-container">
-                <div class="name">%s</div>
-                <div class="title %s">%s</div>
-                <div class="contact-info %s">
-                    <span>📞 M:</span>
-                    <span>%s</span>
-                </div>
-                <div class="company">%s</div>
-                <div class="address">%s</div>
-                <a href="%s" class="website">%s</a>
-                <div class="quote">
-                   %s
-                </div>
-            </div>
-        </body>
-        </html>
-        """.formatted(
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8"/>
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            line-height: 1.5;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        .signature-container {
+                            max-width: 400px;
+                            padding: 10px;
+                            border: 1px solid #ddd;
+                            border-radius: 5px;
+                        }
+                        .name {
+                            font-size: 18px;
+                            font-weight: bold;
+                        }
+                        .hide {
+                            display: none;
+                        }
+                        .title {
+                            font-size: 14px;
+                            font-style: italic;
+                            margin-bottom: 10px;
+                        }
+                        .contact-info {
+                            margin-bottom: 10px;
+                        }
+                        .contact-info span {
+                            display: inline-block;
+                            margin-right: 5px;
+                        }
+                        .company {
+                            font-size: 14px;
+                            font-weight: bold;
+                            margin-bottom: 5px;
+                        }
+                        .address {
+                            font-size: 12px;
+                            color: #555;
+                            margin-bottom: 5px;
+                        }
+                        .website {
+                            font-size: 12px;
+                            color: #007BFF;
+                            text-decoration: none;
+                        }
+                        .quote {
+                            font-size: 12px;
+                            font-style: italic;
+                            color: #555;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="signature-container">
+                        <div class="name">%s</div>
+                        <div class="title %s">%s</div>
+                        <div class="contact-info %s">
+                            <span>📞 M:</span>
+                            <span>%s</span>
+                        </div>
+                        <div class="company">%s</div>
+                        <div class="address">%s</div>
+                        <a href="%s" class="website">%s</a>
+                        <div class="quote">
+                           %s
+                        </div>
+                    </div>
+                </body>
+                </html>
+                """.formatted(
                 username,
                 titleClass, userTitle != null ? userTitle : "",
                 phoneClass, PhoneNumber != null ? PhoneNumber : "",
@@ -112,79 +115,74 @@ public class EmailSignatureService {
                 companyAddress,
                 website,
                 website,
-                missionStatement
-        );
+                missionStatement);
 
     }
 
-    // public File generateImageFromHtml(String htmlContent, String userEmail, String imageDirectory) throws IOException {
-    //     File directory = new File(imageDirectory);
-    //     if (!directory.exists()) {
-    //         directory.mkdirs();
-    //     }
+    // public File generateImageFromHtml(String htmlContent, String userEmail,
+    // String imageDirectory) throws IOException {
+    // File directory = new File(imageDirectory);
+    // if (!directory.exists()) {
+    // directory.mkdirs();
+    // }
 
-    //     String sanitizedEmail = userEmail.replaceAll("[^a-zA-Z0-9.-]", "_");
-    //     String outputPath = imageDirectory + File.separator + sanitizedEmail + "_signature.png";
+    // String sanitizedEmail = userEmail.replaceAll("[^a-zA-Z0-9.-]", "_");
+    // String outputPath = imageDirectory + File.separator + sanitizedEmail +
+    // "_signature.png";
 
-    //     File tempHtmlFile = File.createTempFile("signature", ".html");
-    //     try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempHtmlFile))) {
-    //         writer.write(htmlContent);
-    //     }
+    // File tempHtmlFile = File.createTempFile("signature", ".html");
+    // try (BufferedWriter writer = new BufferedWriter(new
+    // FileWriter(tempHtmlFile))) {
+    // writer.write(htmlContent);
+    // }
 
-    //     try {
-    //         Java2DRenderer renderer = new Java2DRenderer(tempHtmlFile, 800);
-    //         BufferedImage image = renderer.getImage();
+    // try {
+    // Java2DRenderer renderer = new Java2DRenderer(tempHtmlFile, 800);
+    // BufferedImage image = renderer.getImage();
 
-    //         File outputFile = new File(outputPath);
-    //         ImageIO.write(image, "png", outputFile);
+    // File outputFile = new File(outputPath);
+    // ImageIO.write(image, "png", outputFile);
 
-    //         return outputFile;
-    //     } finally {
-    //         tempHtmlFile.delete();
-    //     }
+    // return outputFile;
+    // } finally {
+    // tempHtmlFile.delete();
+    // }
     // }
 
     public File generateImageFromHtml(String htmlContent, String userEmail, String imageDirectory) throws IOException {
         File directory = new File(imageDirectory);
         if (!directory.exists()) {
             directory.mkdirs();
-            System.out.println("Directory created: " + directory.getAbsolutePath());
         }
-    
+
         String sanitizedEmail = userEmail.replaceAll("[^a-zA-Z0-9.-]", "_");
         String outputPath = imageDirectory + File.separator + sanitizedEmail + "_signature.png";
-        System.out.println("Output path for image: " + outputPath);
+
+        Path tempHtmlPath = Files.createTempFile("signature", ".html");
+        Files.write(tempHtmlPath, htmlContent.getBytes());
+
     
-        File tempHtmlFile = File.createTempFile("signature", ".html");
-        System.out.println("Temporary HTML file created: " + tempHtmlFile.getAbsolutePath());
-    
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempHtmlFile))) {
-            writer.write(htmlContent);
-            System.out.println("HTML content written to temp file.");
-        }
-    
+        ProcessBuilder processBuilder = new ProcessBuilder(
+                "wkhtmltoimage",
+                "--width", String.valueOf(300),
+                tempHtmlPath.toString(),
+                outputPath);
+        processBuilder.redirectErrorStream(true);
+
+        Process process = processBuilder.start();
         try {
-            Java2DRenderer renderer = new Java2DRenderer(tempHtmlFile, 800);
-            System.out.println("Java2DRenderer initialized.");
-            BufferedImage image = renderer.getImage();
-            System.out.println("Image rendering completed.");
-    
-            File outputFile = new File(outputPath);
-            ImageIO.write(image, "png", outputFile);
-            System.out.println("Image written to file: " + outputFile.getAbsolutePath());
-    
-            return outputFile;
-        } catch (Exception e) {
-            System.err.println("Error during image generation: " + e.getMessage());
-            e.printStackTrace();
-            throw e;
-        } 
-        // finally {
-        //     boolean deleted = tempHtmlFile.delete();
-        //     e.printStackTrace();
-        //     System.out.println("Temporary file deleted: " + deleted);
-        // }
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                throw new IOException("wkhtmltoimage failed with exit code: " + exitCode);
+            }
+
+            return new File(outputPath);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException("Process was interrupted", e);
+        } finally {
+            Files.deleteIfExists(tempHtmlPath);
+        }
     }
-    
 
 }
