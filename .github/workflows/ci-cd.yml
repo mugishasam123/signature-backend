@@ -102,8 +102,7 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no -i $HOME/key.pem ubuntu@${{ secrets.DEPLOY_HOST }} << 'EOF'
         cd  /home/ubuntu/deployment/deployment
-        pm2 delete java || true
-        pm2 start java -- -jar target/email-signature-generator-0.0.1-SNAPSHOT.jar --name email-signature-generator
+        pm2 start java -- -jar target/email-signature-generator-0.0.1-SNAPSHOT.jar
         pm2 save
         pm2 startup | sudo bash
         sudo systemctl restart nginx
