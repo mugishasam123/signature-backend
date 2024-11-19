@@ -14,6 +14,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+//@EntityListeners(CompanyEntityListener.class)
+
 public class Company {
 
     @Id
