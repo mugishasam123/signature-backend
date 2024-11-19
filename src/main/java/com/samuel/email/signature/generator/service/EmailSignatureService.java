@@ -178,10 +178,12 @@ public class EmailSignatureService {
             System.err.println("Error during image generation: " + e.getMessage());
             e.printStackTrace();
             throw e;
-        } finally {
-            boolean deleted = tempHtmlFile.delete();
-            System.out.println("Temporary file deleted: " + deleted);
-        }
+        } 
+        // finally {
+        //     boolean deleted = tempHtmlFile.delete();
+        //     e.printStackTrace();
+        //     System.out.println("Temporary file deleted: " + deleted);
+        // }
     }
     
 
