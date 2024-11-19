@@ -109,6 +109,5 @@ jobs:
         pm2 start /home/ubuntu/.sdkman/candidates/java/current/bin/java  -- -jar target/email-signature-generator-0.0.1-SNAPSHOT.jar
         pm2 save
         pm2 startup | sudo bash
-
         sudo systemctl restart nginx
         EOF
