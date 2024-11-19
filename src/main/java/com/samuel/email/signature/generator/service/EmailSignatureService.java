@@ -117,31 +117,72 @@ public class EmailSignatureService {
 
     }
 
+    // public File generateImageFromHtml(String htmlContent, String userEmail, String imageDirectory) throws IOException {
+    //     File directory = new File(imageDirectory);
+    //     if (!directory.exists()) {
+    //         directory.mkdirs();
+    //     }
+
+    //     String sanitizedEmail = userEmail.replaceAll("[^a-zA-Z0-9.-]", "_");
+    //     String outputPath = imageDirectory + File.separator + sanitizedEmail + "_signature.png";
+
+    //     File tempHtmlFile = File.createTempFile("signature", ".html");
+    //     try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempHtmlFile))) {
+    //         writer.write(htmlContent);
+    //     }
+
+    //     try {
+    //         Java2DRenderer renderer = new Java2DRenderer(tempHtmlFile, 800);
+    //         BufferedImage image = renderer.getImage();
+
+    //         File outputFile = new File(outputPath);
+    //         ImageIO.write(image, "png", outputFile);
+
+    //         return outputFile;
+    //     } finally {
+    //         tempHtmlFile.delete();
+    //     }
+    // }
+
     public File generateImageFromHtml(String htmlContent, String userEmail, String imageDirectory) throws IOException {
         File directory = new File(imageDirectory);
         if (!directory.exists()) {
             directory.mkdirs();
+            System.out.println("Directory created: " + directory.getAbsolutePath());
         }
-
+    
         String sanitizedEmail = userEmail.replaceAll("[^a-zA-Z0-9.-]", "_");
         String outputPath = imageDirectory + File.separator + sanitizedEmail + "_signature.png";
-
+        System.out.println("Output path for image: " + outputPath);
+    
         File tempHtmlFile = File.createTempFile("signature", ".html");
+        System.out.println("Temporary HTML file created: " + tempHtmlFile.getAbsolutePath());
+    
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempHtmlFile))) {
             writer.write(htmlContent);
+            System.out.println("HTML content written to temp file.");
         }
-
+    
         try {
             Java2DRenderer renderer = new Java2DRenderer(tempHtmlFile, 800);
+            System.out.println("Java2DRenderer initialized.");
             BufferedImage image = renderer.getImage();
-
+            System.out.println("Image rendering completed.");
+    
             File outputFile = new File(outputPath);
             ImageIO.write(image, "png", outputFile);
-
+            System.out.println("Image written to file: " + outputFile.getAbsolutePath());
+    
             return outputFile;
+        } catch (Exception e) {
+            System.err.println("Error during image generation: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
         } finally {
-            tempHtmlFile.delete();
+            boolean deleted = tempHtmlFile.delete();
+            System.out.println("Temporary file deleted: " + deleted);
         }
     }
+    
 
 }
