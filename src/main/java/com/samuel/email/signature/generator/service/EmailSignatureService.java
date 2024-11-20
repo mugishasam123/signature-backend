@@ -38,7 +38,7 @@ public class EmailSignatureService {
                     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                     <style>
                         body {
-                            font-family: Arial, sans-serif;
+                            font-family: Arial, sans-serif, "Noto Color Emoji";
                             line-height: 1.5;
                             margin: 0;
                             padding: 0;
@@ -46,18 +46,17 @@ public class EmailSignatureService {
                         .signature-container {
                             max-width: 400px;
                             padding: 10px;
-                            border: 1px solid #ddd;
-                            border-radius: 5px;
+
                         }
                         .name {
-                            font-size: 18px;
+                            font-size: 34px;
                             font-weight: bold;
                         }
                         .hide {
                             display: none;
                         }
                         .title {
-                            font-size: 14px;
+                            font-size: 24px;
                             font-style: italic;
                             margin-bottom: 10px;
                         }
@@ -67,24 +66,25 @@ public class EmailSignatureService {
                         .contact-info span {
                             display: inline-block;
                             margin-right: 5px;
+                            font-size: 22px;
                         }
                         .company {
-                            font-size: 14px;
+                            font-size: 24px;
                             font-weight: bold;
                             margin-bottom: 5px;
                         }
                         .address {
-                            font-size: 12px;
+                            font-size: 19px;
                             color: #555;
                             margin-bottom: 5px;
                         }
                         .website {
-                            font-size: 12px;
+                            font-size: 19px;
                             color: #007BFF;
                             text-decoration: none;
                         }
                         .quote {
-                            font-size: 12px;
+                            font-size: 19px;
                             font-style: italic;
                             color: #555;
                         }
@@ -119,69 +119,32 @@ public class EmailSignatureService {
 
     }
 
-    // public File generateImageFromHtml(String htmlContent, String userEmail,
-    // String imageDirectory) throws IOException {
-    // File directory = new File(imageDirectory);
-    // if (!directory.exists()) {
-    // directory.mkdirs();
-    // }
-
-    // String sanitizedEmail = userEmail.replaceAll("[^a-zA-Z0-9.-]", "_");
-    // String outputPath = imageDirectory + File.separator + sanitizedEmail +
-    // "_signature.png";
-
-    // File tempHtmlFile = File.createTempFile("signature", ".html");
-    // try (BufferedWriter writer = new BufferedWriter(new
-    // FileWriter(tempHtmlFile))) {
-    // writer.write(htmlContent);
-    // }
-
-    // try {
-    // Java2DRenderer renderer = new Java2DRenderer(tempHtmlFile, 800);
-    // BufferedImage image = renderer.getImage();
-
-    // File outputFile = new File(outputPath);
-    // ImageIO.write(image, "png", outputFile);
-
-    // return outputFile;
-    // } finally {
-    // tempHtmlFile.delete();
-    // }
-    // }
-
-    public File generateImageFromHtml(String htmlContent, String userEmail, String imageDirectory) throws IOException {
+    public File generateImageFromHtml(String htmlContent, String userEmail,
+            String imageDirectory) throws IOException {
         File directory = new File(imageDirectory);
         if (!directory.exists()) {
             directory.mkdirs();
         }
 
         String sanitizedEmail = userEmail.replaceAll("[^a-zA-Z0-9.-]", "_");
-        String outputPath = imageDirectory + File.separator + sanitizedEmail + "_signature.png";
+        String outputPath = imageDirectory + File.separator + sanitizedEmail +
+                "_signature.png";
 
-        Path tempHtmlPath = Files.createTempFile("signature", ".html");
-        Files.write(tempHtmlPath, htmlContent.getBytes());
+        File tempHtmlFile = File.createTempFile("signature", ".html");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempHtmlFile))) {
+            writer.write(htmlContent);
+        }
 
-    
-        ProcessBuilder processBuilder = new ProcessBuilder(
-                "wkhtmltoimage",
-                "--width", String.valueOf(300),
-                tempHtmlPath.toString(),
-                outputPath);
-        processBuilder.redirectErrorStream(true);
-
-        Process process = processBuilder.start();
         try {
-            int exitCode = process.waitFor();
-            if (exitCode != 0) {
-                throw new IOException("wkhtmltoimage failed with exit code: " + exitCode);
-            }
+            Java2DRenderer renderer = new Java2DRenderer(tempHtmlFile, 360);
+            BufferedImage image = renderer.getImage();
 
-            return new File(outputPath);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IOException("Process was interrupted", e);
+            File outputFile = new File(outputPath);
+            ImageIO.write(image, "png", outputFile);
+
+            return outputFile;
         } finally {
-            Files.deleteIfExists(tempHtmlPath);
+            tempHtmlFile.delete();
         }
     }
 
