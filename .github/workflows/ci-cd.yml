@@ -97,7 +97,6 @@ jobs:
         source: "deployment/*"
         target: "/home/ubuntu/deployment/"
         
-
     - name: SSH into EC2 and restart Pm2 server
       run: |
         ssh -o StrictHostKeyChecking=no -i $HOME/key.pem ubuntu@${{ secrets.DEPLOY_HOST }} << 'EOF'
