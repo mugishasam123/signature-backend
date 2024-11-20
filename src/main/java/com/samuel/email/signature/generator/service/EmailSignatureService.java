@@ -11,8 +11,6 @@ import java.io.IOException;
 import org.xhtmlrenderer.swing.Java2DRenderer;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import java.io.*;
-import java.nio.file.*;
 
 @Service
 public class EmailSignatureService {
